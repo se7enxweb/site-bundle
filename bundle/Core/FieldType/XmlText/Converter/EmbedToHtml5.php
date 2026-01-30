@@ -27,6 +27,36 @@ class EmbedToHtml5 extends BaseEmbedToHtml5
 {
     use SiteAwareTrait;
 
+    /**
+     * Dummy method for compatibility with NetgenEzPlatformSiteApiBundle's compiler pass.
+     *
+     * @param mixed $configResolver
+     */
+    public function setConfigResolver($configResolver): void
+    {
+        // No-op for compatibility
+    }
+
+    /**
+     * Dummy method for compatibility with NetgenEzPlatformSiteApiBundle's compiler pass.
+     *
+     * @param mixed $viewBuilder
+     */
+    public function setViewBuilder($viewBuilder): void
+    {
+        // No-op for compatibility
+    }
+
+    /**
+     * Dummy method for compatibility with NetgenEzPlatformSiteApiBundle's compiler pass.
+     *
+     * @param mixed $viewRenderer
+     */
+    public function setViewRenderer($viewRenderer): void
+    {
+        // No-op for compatibility
+    }
+
     protected function processTag(DOMDocument $xmlDoc, $tagName): void
     {
         $this->logger = $this->logger ?? new NullLogger();
