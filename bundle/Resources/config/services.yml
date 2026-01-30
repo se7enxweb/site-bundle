@@ -261,6 +261,13 @@ services:
         tags:
             - { name: security.voter, priority: 512 }
 
+    ngsite.command.symlink_legacy:
+        class: Netgen\Bundle\SiteBundle\Command\SymlinkLegacyCommand
+        public: true
+        tags:
+            - { name: console.command, command: 'ngsite:symlink:legacy' }
+
+
 #    Custom user context hash providers are disabled by default.
 #    Enable them in your project if needed by copying one of the
 #    following service definitions.
