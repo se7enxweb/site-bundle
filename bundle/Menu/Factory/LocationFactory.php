@@ -38,6 +38,11 @@ class LocationFactory implements FactoryInterface
 
     public function createItem($name, array $options = []): ItemInterface
     {
+        // Handle null name - MenuItem requires a string
+        if ($name === null) {
+            $name = uniqid('menu_item_', true);
+        }
+
         $menuItem = (new MenuItem($name, $this))->setExtra('translation_domain', false);
 
         if (!isset($options['ezlocation']) || !$options['ezlocation'] instanceof Location) {
