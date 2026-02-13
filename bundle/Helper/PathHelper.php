@@ -121,7 +121,7 @@ class PathHelper
 
         $optionsResolver->setRequired('show_current_location');
         $optionsResolver->setAllowedTypes('show_current_location', 'bool');
-        $optionsResolver->setDefault('show_current_location', false);
+        $optionsResolver->setDefault('show_current_location', true);
 
         $optionsResolver->setRequired('absolute_url');
         $optionsResolver->setAllowedTypes('absolute_url', 'bool');
