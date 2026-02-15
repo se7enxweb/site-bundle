@@ -14,10 +14,18 @@ final class GitDataCollector extends DataCollector
 {
     public function collect(Request $request, Response $response, ?Exception $exception = null)
     {
-        $repository = new Repository();
+        try {
+            $repository = new Repository();
 
-        $branch = $repository->getInfoOperator()->getCurrentBranch();
-        $lastCommitHash = $repository->getInfoOperator()->getCurrentCommitHash();
+            $branch = $repository->getInfoOperator()->getCurrentBranch();
+            $lastCommitHash = $repository->getInfoOperator()->getCurrentCommitHash();
+        } catch (Exception $e) {
+            // Gracefully handle non-git deployments
+            // This can occur in production environments where code is deployed
+            // without .git directory (e.g., from tarball or direct copy)
+            $branch = 'N/A (not a git repository)';
+            $lastCommitHash = 'N/A (not a git repository)';
+        }
 
         $this->data = [
             'git_branch' => $branch,
