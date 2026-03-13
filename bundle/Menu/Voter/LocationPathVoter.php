@@ -16,7 +16,9 @@ use function in_array;
 
 final class LocationPathVoter implements VoterInterface
 {
-    public function __construct(private RequestStack $requestStack) {}
+    public function __construct(
+        private RequestStack $requestStack,
+    ) {}
 
     /**
      * Checks whether an item is current.
@@ -44,7 +46,7 @@ final class LocationPathVoter implements VoterInterface
             return null;
         }
 
-        $locationPath = array_map('intval', $locationView->getSiteLocation()->path);
+        $locationPath = array_map('intval', $locationView->getSiteLocation()->pathArray);
 
         if (!in_array($item->getExtra('ibexa_location')->id, $locationPath, true)) {
             return null;

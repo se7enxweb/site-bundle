@@ -24,14 +24,14 @@ use function sprintf;
 
 final class Link implements Converter
 {
-    private const DOWNLOAD_LINK_INLINE = 1;
+    private const int DOWNLOAD_LINK_INLINE = 1;
 
     public function __construct(
-        private readonly Repository $repository,
-        private readonly LoadService $loadService,
-        private readonly RouterInterface $router,
-        private readonly ConfigResolverInterface $configResolver,
-        private readonly LoggerInterface $logger = new NullLogger(),
+        private Repository $repository,
+        private LoadService $loadService,
+        private RouterInterface $router,
+        private ConfigResolverInterface $configResolver,
+        private LoggerInterface $logger = new NullLogger(),
     ) {}
 
     public function convert(DOMDocument $xmlDoc): DOMDocument
@@ -54,7 +54,7 @@ final class Link implements Converter
             // Set resolved href to number character as a default if it can't be resolved
             $hrefResolved = '#';
             $href = $link->getAttribute('xlink:href');
-            preg_match('~^(.+://)?([^#]*)?(#.*|\\s*)?$~', $href, $matches);
+            preg_match('~^(.+://)?([^#]*)?(#.*|\s*)?$~', $href, $matches);
             [, $scheme, $id, $fragment] = $matches;
 
             if ($scheme === 'ezcontent://') {
@@ -130,14 +130,14 @@ final class Link implements Converter
     private function loadContent(int $id): Content
     {
         return $this->repository->sudo(
-            fn (): Content => $this->loadService->loadContent($id),
+            fn (Repository $repository): Content => $this->loadService->loadContent($id),
         );
     }
 
     private function loadLocation(int $id): Location
     {
         return $this->repository->sudo(
-            fn (): Location => $this->loadService->loadLocation($id),
+            fn (Repository $repository): Location => $this->loadService->loadLocation($id),
         );
     }
 

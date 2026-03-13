@@ -28,7 +28,11 @@ final class SiteRuntime
     private const GROUP_FIELDS_POSITION = 'position';
     private const GROUP_FIELDS_FIELD = 'field';
 
-    public function __construct(private PathHelper $pathHelper, private LocaleConverterInterface $localeConverter, private LoadService $loadService) {}
+    public function __construct(
+        private PathHelper $pathHelper,
+        private LocaleConverterInterface $localeConverter,
+        private LoadService $loadService,
+    ) {}
 
     /**
      * Returns the path for specified location ID.
@@ -97,7 +101,7 @@ final class SiteRuntime
     /**
      * Returns grouped and sorted fields for selected content and field definition identifier prefix.
      *
-     * @return array<string, array<string, \Netgen\IbexaSiteApi\API\Values\Field>>
+     * @return array<int, array<string, \Netgen\IbexaSiteApi\API\Values\Field>>
      */
     public function groupFields(Content $content, string $prefix): array
     {
@@ -128,7 +132,7 @@ final class SiteRuntime
 
         usort(
             $groupedFields,
-            static function ($group1, $group2) {
+            static function (array $group1, array $group2): int {
                 $identifiers1 = $group1[self::GROUP_FIELDS_POSITION]->value->identifiers ?? [];
                 $identifier1 = $identifiers1 ? (int) reset($identifiers1) : 999;
 

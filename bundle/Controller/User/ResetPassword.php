@@ -85,10 +85,10 @@ final class ResetPassword extends Controller
         $prePasswordResetEvent->setParameter('form', $form);
 
         $this->eventDispatcher->dispatch($prePasswordResetEvent, SiteEvents::USER_PRE_PASSWORD_RESET);
-        $userUpdateStruct = $prePasswordResetEvent->getUserUpdateStruct();
+        $userUpdateStruct = $prePasswordResetEvent->userUpdateStruct;
 
         $user = $this->repository->sudo(
-            fn (): User => $this->repository->getUserService()->updateUser($user, $userUpdateStruct),
+            static fn (Repository $repository): User => $repository->getUserService()->updateUser($user, $userUpdateStruct),
         );
 
         $postPasswordResetEvent = new UserEvents\PostPasswordResetEvent($user);

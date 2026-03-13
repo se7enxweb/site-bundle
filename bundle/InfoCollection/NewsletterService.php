@@ -26,13 +26,13 @@ use function reset;
 
 final class NewsletterService
 {
-    public const ALREADY_ACTIVE = 'already_active';
+    public const string ALREADY_ACTIVE = 'already_active';
 
-    public const NEW_UNCONFIRMED = 'new';
+    public const string NEW_UNCONFIRMED = 'new';
 
-    public const PREVIOUS_UNCONFIRMED = 'unconfirmed';
+    public const string PREVIOUS_UNCONFIRMED = 'unconfirmed';
 
-    public const UNSUBSCRIBED = 'unsubscribed';
+    public const string UNSUBSCRIBED = 'unsubscribed';
 
     public function __construct(
         private MailerInterface $mailer,
@@ -125,7 +125,7 @@ final class NewsletterService
 
     private function extractOptInIdentifier(FieldData $field): string
     {
-        $identifier = $field->fieldDefinition->identifier;
+        $identifier = $field->getFieldDefinition()->identifier;
         $success = preg_match('/^newsletter_(?<identifier>.*?)_consent/', $identifier, $matches);
 
         if ($success === false) {
@@ -163,7 +163,7 @@ final class NewsletterService
 
         return array_filter(
             $mailerLiteGroupIds,
-            static fn ($mailerLiteGroupId): bool => ctype_digit($mailerLiteGroupId),
+            static fn (string $mailerLiteGroupId): bool => ctype_digit($mailerLiteGroupId),
         );
     }
 

@@ -109,10 +109,10 @@ final class Register extends Controller
         $preUserRegisterEvent->setParameter('form', $form);
 
         $this->eventDispatcher->dispatch($preUserRegisterEvent, SiteEvents::USER_PRE_REGISTER);
-        $data->payload = $preUserRegisterEvent->getUserCreateStruct();
+        $data->payload = $preUserRegisterEvent->userCreateStruct;
 
         foreach ($data->payload->fields as $field) {
-            if ($field->fieldTypeIdentifier !== 'ezuser') {
+            if ($field->fieldTypeIdentifier !== 'ibexa_user') {
                 continue;
             }
 
@@ -124,11 +124,10 @@ final class Register extends Controller
             break;
         }
 
-        /** @var \Ibexa\Contracts\Core\Repository\Values\User\User $newUser */
         $newUser = $this->repository->sudo(
-            fn (): User => $this->repository->getUserService()->createUser(
+            static fn (Repository $repository): User => $repository->getUserService()->createUser(
                 $data->payload,
-                [$this->repository->getUserService()->loadUserGroup($userGroupId)],
+                [$repository->getUserService()->loadUserGroup($userGroupId)],
             ),
         );
 

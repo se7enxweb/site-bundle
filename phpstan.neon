@@ -7,20 +7,26 @@ includes:
 
 parameters:
     ignoreErrors:
-        # Doctrine specifics
+        # Symfony
+
+        - '#generic interface Symfony\\Component\\Form\\\w+ (but )?does not specify its types: TData#'
+        - '#extends generic class Symfony\\Component\\Form\\\w+ but does not specify its types: TData#'
+
+        # Doctrine DBAL
 
         - '#Property Netgen\\Bundle\\SiteBundle\\Entity\\UserAccountKey::\$id is never written, only read#'
 
-        # Ibexa DXP specifics
+        # Ibexa DXP
 
         - '#Access to an undefined property Ibexa\\Contracts\\Core\\FieldType\\Value::\$\w+#'
+        - '#Access to an undefined property Ibexa\\Contracts\\Core\\Repository\\Values\\Content\\Query\\CriterionInterface::\$\w+#'
         - '#Cannot access property \$\w+ on Ibexa\\Contracts\\Core\\FieldType\\Value\|null#'
 
-        # Wrong typehints in vendor packages
+        # Ibexa Site API
 
-        -
-          message: '/Parameter #2 \$value of method Knp\\Menu\\ItemInterface::setAttribute\(\) expects bool\|string\|null, int\|null given/'
-          path: bundle/Menu/RelationListMenuBuilder.php
+        - '#Access to an undefined property Netgen\\IbexaSiteApi\\API\\Settings::\$\w+#'
+
+        # Wrong typehints in vendor packages
 
         -
           message: '#has parameter \$parameters with no value type specified in iterable type array#'
@@ -32,8 +38,4 @@ parameters:
 
         -
           message: '#has parameter \$(blocks|context) with no value type specified in iterable type array#'
-          path: bundle/Templating/Twig/DebugTemplate.php
-
-        -
-          message: '#Method Netgen\\Bundle\\SiteBundle\\Templating\\Twig\\DebugTemplate::doDisplay\(\) has no return type specified#'
-          path: bundle/Templating/Twig/DebugTemplate.php
+          path: bundle/Templating/Twig/

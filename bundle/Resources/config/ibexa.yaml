@@ -5,11 +5,12 @@ system:
                 locations:
                     homepage: '@=config("content.tree_root.location_id")'
                     site_info: '@=config("locations.site_info.id", "ngsite")'
+                    showcase: '@=config("locations.showcase.id", "ngsite")'
                 content:
                     current_user: '@=currentUserId'
     admin_group:
         fieldtypes:
-            ezrichtext:
+            ibexa_richtext:
                 classes:
                     table:
                         choices:

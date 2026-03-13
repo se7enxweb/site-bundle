@@ -10,50 +10,47 @@ use Twig\Template;
 
 use function dirname;
 use function getcwd;
+use function implode;
 use function mb_stripos;
 use function mb_substr;
-use function ob_get_clean;
-use function ob_start;
+use function mb_trim;
 use function preg_replace;
 use function str_contains;
 use function str_ends_with;
-use function trim;
 
 /**
  * Meant to be used as a Twig base template class.
  *
- * Wraps the display method to:
+ * Wraps the yield method to:
  * - Inject debug info into template to be able to see in the markup which one is used
  */
 class DebugTemplate extends Template
 {
     private Filesystem $fileSystem;
 
-    public function display(array $context, array $blocks = []): void
+    public function yield(array $context, array $blocks = []): iterable
     {
         $this->fileSystem = $this->fileSystem ?? new Filesystem();
 
-        // Bufferize to be able to insert template name as HTML comments if applicable.
+        // Get parent result to be able to insert template name as HTML comments if applicable.
         // Layout template name will only appear at the end, to avoid potential quirks with old browsers
         // when comments appear before doctype declaration.
-        ob_start();
-        parent::display($context, $blocks);
-        $templateResult = (string) ob_get_clean();
+        $templateResult = implode('', [...parent::yield($context, $blocks)]);
 
-        $templateName = trim($this->fileSystem->makePathRelative($this->getSourceContext()->getPath(), dirname((string) getcwd())), '/');
+        $templateName = mb_trim($this->fileSystem->makePathRelative($this->getSourceContext()->getPath(), dirname((string) getcwd())), '/');
         $isHtmlTemplate = str_ends_with($templateName, 'html.twig');
         $templateName = $isHtmlTemplate ? $templateName . ' (' . $this->getSourceContext()->getName() . ')' : $templateName;
 
         // Display start template comment, if applicable.
         if ($isHtmlTemplate) {
-            if (str_contains(trim($templateResult), '<!doctype')) {
+            if (str_contains(mb_trim($templateResult), '<!doctype')) {
                 $templateResult = (string) preg_replace(
                     '#(<!doctype[^>]+>)#im',
                     "$1\n<!-- START " . $templateName . ' -->',
                     $templateResult,
                 );
             } else {
-                echo "\n<!-- START " . $templateName . " -->\n";
+                yield "\n<!-- START " . $templateName . " -->\n";
             }
         }
 
@@ -61,36 +58,38 @@ class DebugTemplate extends Template
         if ($isHtmlTemplate) {
             if (str_contains($templateResult, '</body>')) {
                 $bodyPos = (int) mb_stripos($templateResult, '</body>');
+
                 // Add layout template name before </body>, to avoid display quirks in some browsers.
-                echo mb_substr($templateResult, 0, $bodyPos)
+                yield mb_substr($templateResult, 0, $bodyPos)
                      . "\n<!-- STOP " . $templateName . " -->\n"
                      . mb_substr($templateResult, $bodyPos);
             } else {
-                echo $templateResult;
-                echo "\n<!-- STOP " . $templateName . " -->\n";
+                yield $templateResult;
+
+                yield "\n<!-- STOP " . $templateName . " -->\n";
             }
         } else {
-            echo $templateResult;
+            yield $templateResult;
         }
     }
 
-    public function getTemplateName()
+    public function getTemplateName(): string
     {
         return '';
     }
 
-    public function getSourceContext()
+    public function getSourceContext(): Source
     {
         return new Source('', '');
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function getDebugInfo()
+    public function getDebugInfo(): array
     {
         return [];
     }
 
-    protected function doDisplay(array $context, array $blocks = []) {}
+    protected function doDisplay(array $context, array $blocks = []): iterable
+    {
+        return [];
+    }
 }

@@ -16,14 +16,15 @@ use Symfony\Component\Process\Process;
 use function basename;
 use function dirname;
 use function getcwd;
-use function trim;
+use function mb_trim;
 
 use const DIRECTORY_SEPARATOR;
 
 final class DumpDatabaseCommand extends Command
 {
-    public function __construct(private Connection $connection)
-    {
+    public function __construct(
+        private Connection $connection,
+    ) {
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }
@@ -40,7 +41,7 @@ final class DumpDatabaseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $filePath = getcwd() . DIRECTORY_SEPARATOR . trim($input->getArgument('file'), '/');
+        $filePath = getcwd() . DIRECTORY_SEPARATOR . mb_trim($input->getArgument('file'), '/');
         $targetDirectory = dirname($filePath);
         $fileName = basename($filePath);
 
@@ -49,6 +50,7 @@ final class DumpDatabaseCommand extends Command
             $fs->mkdir($targetDirectory);
         }
 
+        /** @var array{ user: string, host: string, dbname: string, password: string } $params */
         $params = $this->connection->getParams();
 
         // https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html#option_mysqldump_opt

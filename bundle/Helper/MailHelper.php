@@ -46,7 +46,7 @@ final class MailHelper
      *
      * @param string|string[] $receivers
      * @param array<string, mixed> $parameters
-     *  @param string|string[]|null $sender
+     * @param string|string[]|null $sender
      */
     public function sendMail(array|string $receivers, string $subject, string $template, array $parameters = [], array|string|null $sender = null): void
     {
@@ -58,7 +58,7 @@ final class MailHelper
             return;
         }
 
-        $email = (new Email())
+        $email = new Email()
             ->from($senderAddress)
             ->sender($senderAddress)
             ->to(...$this->createReceiverAddresses($receivers))

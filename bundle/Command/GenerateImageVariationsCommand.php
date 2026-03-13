@@ -30,8 +30,8 @@ use function count;
 use function explode;
 use function in_array;
 use function iterator_to_array;
+use function mb_trim;
 use function sprintf;
-use function trim;
 
 final class GenerateImageVariationsCommand extends Command
 {
@@ -67,10 +67,10 @@ final class GenerateImageVariationsCommand extends Command
         $query->limit = 0;
 
         $totalCount = $this->repository->sudo(
-            function () use ($query): int {
+            function (Repository $repository) use ($query): int {
                 $languages = $this->configResolver->getParameter('languages');
 
-                return $this->repository->getSearchService()->findContentInfo($query, $languages, false)->totalCount ?? 0;
+                return $repository->getSearchService()->findContentInfo($query, $languages, false)->totalCount ?? 0;
             },
         );
 
@@ -89,16 +89,15 @@ final class GenerateImageVariationsCommand extends Command
         $fields = $this->parseCommaDelimited($input->getOption('fields'));
 
         do {
-            /** @var \Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit[] $searchHits */
+            /** @var \Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit<\Ibexa\Contracts\Core\Repository\Values\Content\Content>[] $searchHits */
             $searchHits = $this->repository->sudo(
-                function () use ($query): iterable {
+                function (Repository $repository) use ($query): iterable {
                     $languages = $this->configResolver->getParameter('languages');
 
-                    return $this->repository->getSearchService()->findContent($query, $languages, false)->searchHits;
+                    return $repository->getSearchService()->findContent($query, $languages, false)->searchHits;
                 },
             );
 
-            /** @var \Ibexa\Contracts\Core\Repository\Values\Content\Content[] $contentItems */
             $contentItems = array_map(
                 static fn (SearchHit $searchHit): ValueObject => $searchHit->valueObject,
                 $searchHits,
@@ -132,7 +131,7 @@ final class GenerateImageVariationsCommand extends Command
     private function generateVariations(Content $content, array $variations, array $fields): void
     {
         foreach ($content->getFields() as $field) {
-            if ($field->fieldTypeIdentifier !== 'ezimage') {
+            if ($field->fieldTypeIdentifier !== 'ibexa_image') {
                 continue;
             }
 
@@ -185,7 +184,7 @@ final class GenerateImageVariationsCommand extends Command
     {
         foreach ($subtreeIds as $subtreeId) {
             yield $this->repository->sudo(
-                fn (): string => $this->repository->getLocationService()->loadLocation($subtreeId)->pathString,
+                static fn (Repository $repository): string => $repository->getLocationService()->loadLocation($subtreeId)->pathString,
             );
         }
     }
@@ -195,12 +194,21 @@ final class GenerateImageVariationsCommand extends Command
      */
     private function parseCommaDelimited(?string $value): array
     {
-        $value = trim($value ?? '');
+        $value = mb_trim($value ?? '');
 
         if ($value === '') {
             return [];
         }
 
-        return array_values(array_unique(array_filter(array_map('trim', explode(',', $value)))));
+        $values = array_map('mb_trim', explode(',', $value));
+
+        return array_values(
+            array_unique(
+                array_filter(
+                    $values,
+                    static fn (string $value): bool => $value !== '',
+                ),
+            ),
+        );
     }
 }

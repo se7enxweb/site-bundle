@@ -22,8 +22,6 @@ use function is_numeric;
 
 final class MoveContentTypeCommand extends Command
 {
-    protected static $defaultDescription = 'Assigns content type(s) to a single content type group';
-
     private SymfonyStyle $style;
 
     public function __construct(
@@ -37,6 +35,7 @@ final class MoveContentTypeCommand extends Command
     protected function configure(): void
     {
         $this
+            ->setDescription('Assigns content type(s) to a single content type group')
             ->addArgument(
                 'types',
                 InputArgument::REQUIRED,
@@ -65,7 +64,7 @@ final class MoveContentTypeCommand extends Command
         }
 
         $types = $input->getArgument('types');
-        $contentTypeIdentifiersOrIds = array_map('trim', explode(',', $types));
+        $contentTypeIdentifiersOrIds = array_map('mb_trim', explode(',', $types));
         $contentTypeGroupIdentifierOrId = (string) $input->getArgument('group');
 
         $newContentTypeGroup = $this->loadContentTypeGroup($contentTypeGroupIdentifierOrId);
@@ -115,7 +114,7 @@ final class MoveContentTypeCommand extends Command
     {
         try {
             $this->repository->sudo(
-                function () use ($newContentTypeGroup, $contentType) {
+                function (Repository $repository) use ($newContentTypeGroup, $contentType): void {
                     $this->contentTypeService->assignContentTypeGroup($contentType, $newContentTypeGroup);
                 },
             );
@@ -129,7 +128,7 @@ final class MoveContentTypeCommand extends Command
             }
 
             $this->repository->sudo(
-                function () use ($contentType, $contentTypeGroup) {
+                function (Repository $repository) use ($contentType, $contentTypeGroup): void {
                     $this->contentTypeService->unassignContentTypeGroup($contentType, $contentTypeGroup);
                 },
             );

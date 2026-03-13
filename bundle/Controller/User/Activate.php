@@ -64,10 +64,10 @@ final class Activate extends Controller
 
         $preActivateEvent = new UserEvents\PreActivateEvent($user, $userUpdateStruct);
         $this->eventDispatcher->dispatch($preActivateEvent, SiteEvents::USER_PRE_ACTIVATE);
-        $userUpdateStruct = $preActivateEvent->getUserUpdateStruct();
+        $userUpdateStruct = $preActivateEvent->userUpdateStruct;
 
         $user = $this->repository->sudo(
-            fn (): User => $this->repository->getUserService()->updateUser($user, $userUpdateStruct),
+            static fn (Repository $repository): User => $repository->getUserService()->updateUser($user, $userUpdateStruct),
         );
 
         $postActivateEvent = new UserEvents\PostActivateEvent($user);
