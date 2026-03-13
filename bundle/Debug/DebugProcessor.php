@@ -52,4 +52,16 @@ final class DebugProcessor implements DebugLoggerInterface
     {
         $this->innerProcessor->clear();
     }
+
+    /**
+     * Required by Symfony 7.4: kernel.reset tag inherited from decorated debug.log_processor
+     * service now triggers reset() call via ServicesResetter. Delegates to clear() which is
+     * the equivalent operation defined on DebugLoggerInterface.
+     *
+     * @see https://github.com/netgen/site-bundle (upstream fix needed)
+     */
+    public function reset(): void
+    {
+        $this->clear();
+    }
 }
