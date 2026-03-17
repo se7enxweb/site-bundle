@@ -1,15 +1,19 @@
 {
-    "name": "netgen/site-bundle",
-    "description": "Netgen Site Bundle is an Ibexa bundle that implements common features that are used by Netgen to implement websites",
-    "license": "GPL-2.0-only",
+    "name": "se7enxweb/site-bundle",
+    "description": "7x Netgen Site Bundle is an Platform / Ibexa bundle that implements common features that are used by Netgen to implement websites",
+    "license": "GPL-2.0-or-later",
     "type": "ibexa-bundle",
     "keywords": [
         "ibexa",
         "site-bundle",
         "netgen"
     ],
-    "homepage": "https://github.com/netgen/site-bundle",
+    "homepage": "https://github.com/se7enxweb/site-bundle",
     "authors": [
+        {
+            "name": "7x",
+            "homepage": "https://se7enx.com"
+        },
         {
             "name": "Netgen",
             "homepage": "https://netgen.io"
