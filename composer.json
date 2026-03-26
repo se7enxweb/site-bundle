@@ -1,23 +1,28 @@
 {
-    "name": "netgen/site-bundle",
-    "description": "Netgen Site Bundle is an eZ Platform bundle that implements common features that are used by Netgen to implement websites",
+    "name": "se7enxweb/site-bundle",
+    "description": "se7enxweb Site Bundle for eZ Platform 3.3 — implements common site features used to run websites on eZ Platform + Netgen Layouts + Media Site",
     "license": "GPL-2.0-only",
     "type": "ezplatform-bundle",
     "keywords": [
         "ezpublish",
         "ezplatform",
         "site-bundle",
-        "netgen"
+        "netgen",
+        "se7enxweb"
     ],
-    "homepage": "https://github.com/netgen/site-bundle",
+    "homepage": "https://github.com/se7enxweb/site-bundle",
     "authors": [
+        {
+            "name": "7x",
+            "homepage": "https://se7enx.com"
+        },
         {
             "name": "Netgen",
             "homepage": "https://netgen.io"
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^7.4 || ^8.0 || ^8.1 || ^8.2 || ^8.3 || ^8.4 || ^8.5",
         "ezsystems/ezplatform-kernel": "^1.3.3",
         "symfony/mailer": "^5.2",
         "symfony/polyfill-php80": "^1.22",
@@ -36,6 +41,9 @@
         "contextualcode/ezplatform-alloyeditor-element-width": "^2.0",
         "sebastianfeldmann/git": "^3.8"
     },
+    "replace": {
+        "netgen/site-bundle": "self.version"
+    },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0"
     },
@@ -51,7 +59,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1.x-dev"
+            "dev-2.x": "2.1.x-dev"
         }
     }
 }
