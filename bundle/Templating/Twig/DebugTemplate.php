@@ -28,7 +28,7 @@ class DebugTemplate extends Template
 {
     private Filesystem $fileSystem;
 
-    public function display(array $context, array $blocks = [])
+    public function display(array $context, array $blocks = []): void
     {
         $this->fileSystem = $this->fileSystem ?? new Filesystem();
 
@@ -74,23 +74,23 @@ class DebugTemplate extends Template
         }
     }
 
-    public function getTemplateName()
+    public function getTemplateName(): string
     {
         return '';
     }
 
-    public function getSourceContext()
+    public function getSourceContext(): Source
     {
         return new Source('', '');
     }
 
-    public function getDebugInfo()
+    public function getDebugInfo(): array
     {
         return [];
     }
 
-    protected function doDisplay(array $context, array $blocks = [])
+    protected function doDisplay(array $context, array $blocks = []): iterable
     {
-        return '';
+        return [];
     }
 }
