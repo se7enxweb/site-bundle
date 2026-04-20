@@ -51,6 +51,9 @@
         "phpstan/phpstan-symfony": "^1.2",
         "phpstan/phpstan-doctrine": "^1.3"
     },
+    "replace": {
+        "netgen/site-bundle": "*"
+    },
     "conflict": {
         "netgen/layouts-ibexa": "<1.4.11"
     },
