@@ -3,6 +3,8 @@ services:
         class: Netgen\Bundle\SiteBundle\Controller\Controller
         parent: netgen.ibexa_site_api.controller.base
         abstract: true
+        calls:
+            - setContainer: ['@Psr\Container\ContainerInterface']
 
     ngsite.controller.check_redirect:
         class: Netgen\Bundle\SiteBundle\Controller\CheckRedirect
