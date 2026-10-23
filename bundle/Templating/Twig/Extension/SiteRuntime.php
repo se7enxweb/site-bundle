@@ -10,16 +10,24 @@ use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverterInterface;
 use Netgen\Bundle\SiteBundle\Helper\PathHelper;
 use Netgen\EzPlatformSiteApi\API\Exceptions\TranslationNotMatchedException;
 use Netgen\EzPlatformSiteApi\API\LoadService;
+use Netgen\EzPlatformSiteApi\API\Values\Content;
 use Symfony\Component\Intl\Languages;
 
 use function ceil;
 use function mb_substr;
+use function preg_match;
+use function preg_quote;
+use function reset;
 use function str_word_count;
 use function ucwords;
+use function usort;
 
 class SiteRuntime
 {
     private const WORDS_PER_MINUTE = 230;
+    private const GROUP_FIELDS_GROUP = 'group';
+    private const GROUP_FIELDS_POSITION = 'position';
+    private const GROUP_FIELDS_FIELD = 'field';
 
     protected PathHelper $pathHelper;
 
@@ -92,5 +100,57 @@ class SiteRuntime
         $readingTime = ceil($wordCount / self::WORDS_PER_MINUTE);
 
         return $readingTime === false || $readingTime < 1 ? 1 : (int) $readingTime;
+    }
+
+    /**
+     * Returns grouped and sorted fields for selected content and field definition identifier prefix.
+     *
+     * Fields named <prefix>_<number>_<name> form one group per number; a group whose fields
+     * (other than "position") are all empty is left out, and the groups are sorted by the first
+     * identifier of their "position" field (groups without one go last).
+     *
+     * @return array<int, array<string, \Netgen\EzPlatformSiteApi\API\Values\Field>>
+     */
+    public function groupFields(Content $content, string $prefix): array
+    {
+        $regex = '/^' . preg_quote($prefix, '/') . '_(?<' . self::GROUP_FIELDS_GROUP . '>\d+)_(?<' . self::GROUP_FIELDS_FIELD . '>.*)$/';
+        $groupedFields = [];
+
+        foreach ($content->fields as $field) {
+            if (preg_match($regex, $field->fieldDefIdentifier, $matches) === 1) {
+                $groupedFields[$matches[self::GROUP_FIELDS_GROUP]][$matches[self::GROUP_FIELDS_FIELD]] = $field;
+            }
+        }
+
+        foreach ($groupedFields as $index => $group) {
+            $empty = true;
+
+            foreach ($group as $identifier => $field) {
+                if ($identifier !== self::GROUP_FIELDS_POSITION && !$field->isEmpty()) {
+                    $empty = false;
+
+                    break;
+                }
+            }
+
+            if ($empty) {
+                unset($groupedFields[$index]);
+            }
+        }
+
+        usort(
+            $groupedFields,
+            static function (array $group1, array $group2): int {
+                $identifiers1 = isset($group1[self::GROUP_FIELDS_POSITION]) ? ($group1[self::GROUP_FIELDS_POSITION]->value->identifiers ?? []) : [];
+                $identifier1 = $identifiers1 ? (int) reset($identifiers1) : 999;
+
+                $identifiers2 = isset($group2[self::GROUP_FIELDS_POSITION]) ? ($group2[self::GROUP_FIELDS_POSITION]->value->identifiers ?? []) : [];
+                $identifier2 = $identifiers2 ? (int) reset($identifiers2) : 999;
+
+                return $identifier1 <=> $identifier2;
+            },
+        );
+
+        return $groupedFields;
     }
 }
