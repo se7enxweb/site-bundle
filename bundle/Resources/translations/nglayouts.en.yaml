@@ -27,6 +27,11 @@ block.plugin.set_container.wide: 'Wide'
 block.plugin.title_icon.enabled: 'Use icon'
 block.plugin.title_icon.css_class: 'Icon CSS class'
 
+block.plugin.features_component_grid.number_of_columns: 'Number of columns'
+block.plugin.features_component_grid.2_columns: '2 columns'
+block.plugin.features_component_grid.3_columns: '3 columns'
+block.plugin.features_component_grid.4_columns: '4 columns'
+
 query.content_by_topic.use_topic_from_current_content: 'Use topic from current content'
 query.content_by_topic.topic_content_id: 'Topic content'
 query.content_by_topic.use_current_location: 'Use current location as parent'
