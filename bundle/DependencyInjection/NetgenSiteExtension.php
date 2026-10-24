@@ -56,6 +56,7 @@ final class NetgenSiteExtension extends Extension implements PrependExtensionInt
 
         if (in_array(NetgenLayoutsBundle::class, $activatedBundles, true)) {
             $loader->load('layouts/services.yaml');
+            $loader->load('layouts/commands.yaml');
         }
 
         if ($container->getParameter('kernel.debug') === true) {
