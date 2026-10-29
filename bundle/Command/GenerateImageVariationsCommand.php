@@ -35,14 +35,22 @@ use function trim;
 
 final class GenerateImageVariationsCommand extends Command
 {
+    private Repository $repository;
+    private VariationHandler $variationHandler;
+    private TagAwareAdapterInterface $cache;
+    private ConfigResolverInterface $configResolver;
     private SymfonyStyle $style;
 
     public function __construct(
-        private Repository $repository,
-        private VariationHandler $variationHandler,
-        private TagAwareAdapterInterface $cache,
-        private ConfigResolverInterface $configResolver,
+        Repository $repository,
+        VariationHandler $variationHandler,
+        TagAwareAdapterInterface $cache,
+        ConfigResolverInterface $configResolver
     ) {
+        $this->repository = $repository;
+        $this->variationHandler = $variationHandler;
+        $this->cache = $cache;
+        $this->configResolver = $configResolver;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }

@@ -39,12 +39,12 @@ abstract class BaseDebugTemplate extends Template
         $templateResult = implode('', is_array($result) ? $result : iterator_to_array($result, false));
 
         $templateName = trim($this->fileSystem->makePathRelative($this->getSourceContext()->getPath(), dirname((string) getcwd())), '/');
-        $isHtmlTemplate = str_ends_with($templateName, 'html.twig');
+        $isHtmlTemplate = substr_compare($templateName, 'html.twig', -strlen('html.twig')) === 0;
         $templateName = $isHtmlTemplate ? $templateName . ' (' . $this->getSourceContext()->getName() . ')' : $templateName;
 
         // Display start template comment, if applicable.
         if ($isHtmlTemplate) {
-            if (str_contains(trim($templateResult), '<!doctype')) {
+            if (strpos(trim($templateResult), '<!doctype') !== false) {
                 $templateResult = (string) preg_replace(
                     '#(<!doctype[^>]+>)#im',
                     "$1\n<!-- START " . $templateName . ' -->',
@@ -57,7 +57,7 @@ abstract class BaseDebugTemplate extends Template
 
         // Display stop template comment after result, if applicable.
         if ($isHtmlTemplate) {
-            if (str_contains($templateResult, '</body>')) {
+            if (strpos($templateResult, '</body>') !== false) {
                 $bodyPos = (int) mb_stripos($templateResult, '</body>');
 
                 // Add layout template name before </body>, to avoid display quirks in some browsers.

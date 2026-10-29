@@ -23,6 +23,8 @@ use function realpath;
 
 final class SymlinkProjectCommand extends Command
 {
+    private KernelInterface $kernel;
+    private Filesystem $fileSystem;
     /**
      * If true, command will destroy existing symlinks before recreating them.
      */
@@ -38,8 +40,10 @@ final class SymlinkProjectCommand extends Command
         'offline_eng.html',
     ];
 
-    public function __construct(private KernelInterface $kernel, private Filesystem $fileSystem)
+    public function __construct(KernelInterface $kernel, Filesystem $fileSystem)
     {
+        $this->kernel = $kernel;
+        $this->fileSystem = $fileSystem;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }

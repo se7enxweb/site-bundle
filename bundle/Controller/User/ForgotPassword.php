@@ -18,11 +18,15 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class ForgotPassword extends Controller
 {
-    public function __construct(
-        private UserService $userService,
-        private EventDispatcherInterface $eventDispatcher,
-        private ConfigResolverInterface $configResolver,
-    ) {}
+    private UserService $userService;
+    private EventDispatcherInterface $eventDispatcher;
+    private ConfigResolverInterface $configResolver;
+    public function __construct(UserService $userService, EventDispatcherInterface $eventDispatcher, ConfigResolverInterface $configResolver)
+    {
+        $this->userService = $userService;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->configResolver = $configResolver;
+    }
 
     /**
      * Displays and validates the forgot password form.

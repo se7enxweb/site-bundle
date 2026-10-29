@@ -14,12 +14,19 @@ use function array_flip;
 final class SetContainerPlugin extends Plugin
 {
     /**
+     * @var array<string, string>
+     */
+    private array $sizes;
+    /**
      * The list of sizes available. Keys should be identifiers, while values
      * should be human readable names of the sizes.
      *
      * @param array<string, string> $sizes
      */
-    public function __construct(private array $sizes) {}
+    public function __construct(array $sizes)
+    {
+        $this->sizes = $sizes;
+    }
 
     public static function getExtendedHandlers(): iterable
     {

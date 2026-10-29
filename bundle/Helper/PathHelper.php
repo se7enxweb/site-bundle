@@ -18,11 +18,15 @@ use function is_array;
 
 final class PathHelper
 {
-    public function __construct(
-        private LoadService $loadService,
-        private ConfigResolverInterface $configResolver,
-        private UrlGeneratorInterface $urlGenerator,
-    ) {}
+    private LoadService $loadService;
+    private ConfigResolverInterface $configResolver;
+    private UrlGeneratorInterface $urlGenerator;
+    public function __construct(LoadService $loadService, ConfigResolverInterface $configResolver, UrlGeneratorInterface $urlGenerator)
+    {
+        $this->loadService = $loadService;
+        $this->configResolver = $configResolver;
+        $this->urlGenerator = $urlGenerator;
+    }
 
     /**
      * Returns the path array for provided location ID.
@@ -69,7 +73,7 @@ final class PathHelper
 
             try {
                 $location = $this->loadService->loadLocation($pathItem);
-            } catch (UnauthorizedException) {
+            } catch (UnauthorizedException $exception) {
                 return [];
             }
 

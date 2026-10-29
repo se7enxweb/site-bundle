@@ -22,8 +22,18 @@ use function is_string;
 
 final class MailHelper
 {
-    public function __construct(private MailerInterface $mailer, private Environment $twig, private TranslatorInterface $translator, private ConfigResolverInterface $configResolver, private ?LoggerInterface $logger = null)
+    private MailerInterface $mailer;
+    private Environment $twig;
+    private TranslatorInterface $translator;
+    private ConfigResolverInterface $configResolver;
+    private ?LoggerInterface $logger = null;
+    public function __construct(MailerInterface $mailer, Environment $twig, TranslatorInterface $translator, ConfigResolverInterface $configResolver, ?LoggerInterface $logger = null)
     {
+        $this->mailer = $mailer;
+        $this->twig = $twig;
+        $this->translator = $translator;
+        $this->configResolver = $configResolver;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -45,7 +55,7 @@ final class MailHelper
      * @param array<string, mixed> $parameters
      *  @param string|string[]|null $sender
      */
-    public function sendMail(array|string $receivers, string $subject, string $template, array $parameters = [], array|string|null $sender = null): void
+    public function sendMail($receivers, string $subject, string $template, array $parameters = [], $sender = null): void
     {
         try {
             $senderAddress = $this->createSenderAddress($sender);
@@ -75,7 +85,7 @@ final class MailHelper
      *
      * @throws \InvalidArgumentException If sender was not provided
      */
-    private function createSenderAddress(array|string|null $sender): Address
+    private function createSenderAddress($sender): Address
     {
         if (!in_array($sender, [null, '', []], true)) {
             if ((is_array($sender) && count($sender) === 1 && !isset($sender[0])) || is_string($sender)) {
@@ -110,7 +120,7 @@ final class MailHelper
      *
      * @return iterable<\Symfony\Component\Mime\Address>
      */
-    private function createReceiverAddresses(array|string $addresses): iterable
+    private function createReceiverAddresses($addresses): iterable
     {
         foreach ((array) $addresses as $key => $value) {
             if (is_string($key)) {

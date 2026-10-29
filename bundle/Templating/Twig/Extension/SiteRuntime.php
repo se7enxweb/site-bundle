@@ -23,12 +23,20 @@ use function usort;
 
 final class SiteRuntime
 {
+    private PathHelper $pathHelper;
+    private LocaleConverterInterface $localeConverter;
+    private LoadService $loadService;
     private const WORDS_PER_MINUTE = 230;
     private const GROUP_FIELDS_GROUP = 'group';
     private const GROUP_FIELDS_POSITION = 'position';
     private const GROUP_FIELDS_FIELD = 'field';
 
-    public function __construct(private PathHelper $pathHelper, private LocaleConverterInterface $localeConverter, private LoadService $loadService) {}
+    public function __construct(PathHelper $pathHelper, LocaleConverterInterface $localeConverter, LoadService $loadService)
+    {
+        $this->pathHelper = $pathHelper;
+        $this->localeConverter = $localeConverter;
+        $this->loadService = $loadService;
+    }
 
     /**
      * Returns the path for specified location ID.
@@ -65,7 +73,7 @@ final class SiteRuntime
     {
         try {
             $content = $this->loadService->loadContent($contentId);
-        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException) {
+        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException $exception) {
             return null;
         }
 
@@ -79,7 +87,7 @@ final class SiteRuntime
     {
         try {
             $location = $this->loadService->loadLocation($locationId);
-        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException) {
+        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException $exception) {
             return null;
         }
 

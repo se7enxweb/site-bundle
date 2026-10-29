@@ -21,8 +21,14 @@ use function sprintf;
 
 final class ChildrenBuilder
 {
-    public function __construct(private LoadService $loadService, private FilterService $filterService, private ?LoggerInterface $logger = null)
+    private LoadService $loadService;
+    private FilterService $filterService;
+    private ?LoggerInterface $logger = null;
+    public function __construct(LoadService $loadService, FilterService $filterService, ?LoggerInterface $logger = null)
     {
+        $this->loadService = $loadService;
+        $this->filterService = $filterService;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 

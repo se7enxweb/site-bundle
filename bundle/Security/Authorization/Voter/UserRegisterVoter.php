@@ -16,9 +16,18 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
  */
 final class UserRegisterVoter implements VoterInterface
 {
-    public function __construct(private PermissionResolver $permissionResolver, private RequestStack $requestStack) {}
+    private PermissionResolver $permissionResolver;
+    private RequestStack $requestStack;
+    public function __construct(PermissionResolver $permissionResolver, RequestStack $requestStack)
+    {
+        $this->permissionResolver = $permissionResolver;
+        $this->requestStack = $requestStack;
+    }
 
-    public function vote(TokenInterface $token, mixed $subject, array $attributes): int
+    /**
+     * @param mixed $subject
+     */
+    public function vote(TokenInterface $token, $subject, array $attributes): int
     {
         foreach ($attributes as $attribute) {
             if (!$this->supportsAttribute($attribute)) {
@@ -35,7 +44,10 @@ final class UserRegisterVoter implements VoterInterface
         return VoterInterface::ACCESS_ABSTAIN;
     }
 
-    private function supportsAttribute(mixed $attribute): bool
+    /**
+     * @param mixed $attribute
+     */
+    private function supportsAttribute($attribute): bool
     {
         if (!$attribute instanceof Attribute) {
             return false;

@@ -22,16 +22,19 @@ use function trim;
 
 final class SearchQueryType extends OptionsResolverBasedQueryType
 {
-    public function __construct(
+    private Site $site;
+    private ConfigResolverInterface $configResolver;
+    public function __construct(Site $site, ConfigResolverInterface $configResolver)
+    {
         /**
          * @readonly
          */
-        private Site $site,
+        $this->site = $site;
         /**
          * @readonly
          */
-        private ConfigResolverInterface $configResolver,
-    ) {}
+        $this->configResolver = $configResolver;
+    }
 
     public static function getName(): string
     {

@@ -22,14 +22,18 @@ use function is_numeric;
 
 final class MoveContentTypeCommand extends Command
 {
+    private Repository $repository;
+    private ContentTypeService $contentTypeService;
     protected static $defaultDescription = 'Assigns content type(s) to a single content type group';
 
     private SymfonyStyle $style;
 
     public function __construct(
-        private Repository $repository,
-        private ContentTypeService $contentTypeService,
+        Repository $repository,
+        ContentTypeService $contentTypeService
     ) {
+        $this->repository = $repository;
+        $this->contentTypeService = $contentTypeService;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }
@@ -119,7 +123,7 @@ final class MoveContentTypeCommand extends Command
                     $this->contentTypeService->assignContentTypeGroup($contentType, $newContentTypeGroup);
                 },
             );
-        } catch (InvalidArgumentException) {
+        } catch (InvalidArgumentException $exception) {
             // Content type is already assigned to the given content type group, do nothing
         }
 

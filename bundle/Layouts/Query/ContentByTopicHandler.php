@@ -33,6 +33,8 @@ use function count;
 
 final class ContentByTopicHandler implements QueryTypeHandlerInterface
 {
+    private LoadService $loadService;
+    private FindService $findService;
     use Traits\ContentTypeFilterTrait;
     use Traits\MainLocationFilterTrait;
     use Traits\ObjectStateFilterTrait;
@@ -42,13 +44,15 @@ final class ContentByTopicHandler implements QueryTypeHandlerInterface
     use Traits\SortTrait;
 
     public function __construct(
-        private LoadService $loadService,
-        private FindService $findService,
+        LoadService $loadService,
+        FindService $findService,
         LocationService $locationService,
         SectionHandler $sectionHandler,
         ObjectStateHandler $objectStateHandler,
-        ContentProviderInterface $contentProvider,
+        ContentProviderInterface $contentProvider
     ) {
+        $this->loadService = $loadService;
+        $this->findService = $findService;
         $this->setLocationService($locationService);
         $this->setSectionHandler($sectionHandler);
         $this->setObjectStateHandler($objectStateHandler);
@@ -187,7 +191,7 @@ final class ContentByTopicHandler implements QueryTypeHandlerInterface
         } elseif ($contentId !== null) {
             try {
                 $content = $this->loadService->loadContent($contentId)->innerContent;
-            } catch (NotFoundException|UnauthorizedException) {
+            } catch (NotFoundException|UnauthorizedException $exception) {
                 // Do nothing
             }
         }

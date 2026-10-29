@@ -24,31 +24,41 @@ use function sprintf;
 
 final class Link implements Converter
 {
+    private Repository $repository;
+    private LoadService $loadService;
+    private RouterInterface $router;
+    private ConfigResolverInterface $configResolver;
+    private ?LoggerInterface $logger = null;
     private const DOWNLOAD_LINK_INLINE = 1;
 
     public function __construct(
-        /**
-         * @readonly
-         */
-        private Repository $repository,
-        /**
-         * @readonly
-         */
-        private LoadService $loadService,
-        /**
-         * @readonly
-         */
-        private RouterInterface $router,
-        /**
-         * @readonly
-         */
-        private ConfigResolverInterface $configResolver,
-        /**
-         * @readonly
-         */
-        private ?LoggerInterface $logger = null
+        Repository $repository,
+        LoadService $loadService,
+        RouterInterface $router,
+        ConfigResolverInterface $configResolver,
+        ?LoggerInterface $logger = null
     )
     {
+        /**
+         * @readonly
+         */
+        $this->repository = $repository;
+        /**
+         * @readonly
+         */
+        $this->loadService = $loadService;
+        /**
+         * @readonly
+         */
+        $this->router = $router;
+        /**
+         * @readonly
+         */
+        $this->configResolver = $configResolver;
+        /**
+         * @readonly
+         */
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -85,7 +95,7 @@ final class Link implements Converter
 
                     $downloadLink = $this->getDownloadLink($content);
                     $hrefResolved = $downloadLink ?? $hrefResolved;
-                } catch (APINotFoundException) {
+                } catch (APINotFoundException $exception) {
                     $this->logger->error(
                         sprintf('While generating link for RichText, could not find Content #%s', $id),
                     );
@@ -101,7 +111,7 @@ final class Link implements Converter
                     $content = $location->content;
                     $downloadLink = $this->getDownloadLink($content);
                     $hrefResolved = $downloadLink ?? $hrefResolved;
-                } catch (APINotFoundException) {
+                } catch (APINotFoundException $exception) {
                     $this->logger->error(
                         sprintf('While generating link for RichText, could not find Location #%s', $id),
                     );
@@ -159,7 +169,10 @@ final class Link implements Converter
         );
     }
 
-    private function generateUrlAliasForContentOrLocation(Content|Location $object, string $fragment): string
+    /**
+     * @param \Netgen\IbexaSiteApi\API\Values\Content|\Netgen\IbexaSiteApi\API\Values\Location $object
+     */
+    private function generateUrlAliasForContentOrLocation($object, string $fragment): string
     {
         $urlAlias = $this->router->generate(
             RouteObjectInterface::OBJECT_BASED_ROUTE_NAME,

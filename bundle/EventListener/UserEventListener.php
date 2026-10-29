@@ -15,14 +15,21 @@ use Netgen\IbexaSiteApi\API\Values\ContentInfo;
 
 abstract class UserEventListener
 {
-    public function __construct(
-        protected MailHelper $mailHelper,
-        protected ConfigResolverInterface $configResolver,
-        protected NgUserSettingRepository $ngUserSettingRepository,
-        protected UserAccountKeyRepository $userAccountKeyRepository,
-        protected LoadService $loadService,
-        protected Repository $repository,
-    ) {}
+    protected MailHelper $mailHelper;
+    protected ConfigResolverInterface $configResolver;
+    protected NgUserSettingRepository $ngUserSettingRepository;
+    protected UserAccountKeyRepository $userAccountKeyRepository;
+    protected LoadService $loadService;
+    protected Repository $repository;
+    public function __construct(MailHelper $mailHelper, ConfigResolverInterface $configResolver, NgUserSettingRepository $ngUserSettingRepository, UserAccountKeyRepository $userAccountKeyRepository, LoadService $loadService, Repository $repository)
+    {
+        $this->mailHelper = $mailHelper;
+        $this->configResolver = $configResolver;
+        $this->ngUserSettingRepository = $ngUserSettingRepository;
+        $this->userAccountKeyRepository = $userAccountKeyRepository;
+        $this->loadService = $loadService;
+        $this->repository = $repository;
+    }
 
     /**
      * Returns the translated user name.

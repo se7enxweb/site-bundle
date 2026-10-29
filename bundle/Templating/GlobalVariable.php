@@ -12,11 +12,15 @@ use Netgen\IbexaSiteApi\API\Values\Location;
 
 final class GlobalVariable
 {
-    public function __construct(
-        private Provider $namedObjectProvider,
-        private PermissionService $permissionService,
-        private LoadService $loadService,
-    ) {}
+    private Provider $namedObjectProvider;
+    private PermissionService $permissionService;
+    private LoadService $loadService;
+    public function __construct(Provider $namedObjectProvider, PermissionService $permissionService, LoadService $loadService)
+    {
+        $this->namedObjectProvider = $namedObjectProvider;
+        $this->permissionService = $permissionService;
+        $this->loadService = $loadService;
+    }
 
     public function getSiteInfoLocation(): Location
     {

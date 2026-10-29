@@ -22,12 +22,17 @@ use function count;
 
 final class UrlGenerator
 {
-    public function __construct(
-        private FindService $findService,
-        private LoadService $loadService,
-        private ConfigResolverInterface $configResolver,
-        private UrlGeneratorInterface $urlGenerator,
-    ) {}
+    private FindService $findService;
+    private LoadService $loadService;
+    private ConfigResolverInterface $configResolver;
+    private UrlGeneratorInterface $urlGenerator;
+    public function __construct(FindService $findService, LoadService $loadService, ConfigResolverInterface $configResolver, UrlGeneratorInterface $urlGenerator)
+    {
+        $this->findService = $findService;
+        $this->loadService = $loadService;
+        $this->configResolver = $configResolver;
+        $this->urlGenerator = $urlGenerator;
+    }
 
     /**
      * Returns the path for the topic specified by provided tag.
@@ -47,8 +52,9 @@ final class UrlGenerator
      * If exists, returns the location of the content with ng_topic identifier connected to provided tag.
      *
      * Otherwise, the tag itself is returned.
+     * @return \Netgen\IbexaSiteApi\API\Values\Location|\Netgen\TagsBundle\API\Repository\Values\Tags\Tag
      */
-    private function getTopicValueObject(Tag $tag): Location|Tag
+    private function getTopicValueObject(Tag $tag)
     {
         $rootLocation = $this->loadService->loadLocation(
             $this->configResolver->getParameter('content.tree_root.location_id'),

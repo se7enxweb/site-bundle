@@ -17,8 +17,16 @@ use function sprintf;
 
 final class RelationListMenuBuilder
 {
-    public function __construct(private FactoryInterface $factory, private LoadService $loadService, private Provider $namedObjectProvider, private ?LoggerInterface $logger = null)
+    private FactoryInterface $factory;
+    private LoadService $loadService;
+    private Provider $namedObjectProvider;
+    private ?LoggerInterface $logger = null;
+    public function __construct(FactoryInterface $factory, LoadService $loadService, Provider $namedObjectProvider, ?LoggerInterface $logger = null)
     {
+        $this->factory = $factory;
+        $this->loadService = $loadService;
+        $this->namedObjectProvider = $namedObjectProvider;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 

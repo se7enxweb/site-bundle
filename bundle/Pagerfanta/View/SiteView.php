@@ -16,6 +16,8 @@ use function trim;
 
 class SiteView implements ViewInterface
 {
+    private Environment $twig;
+    private ConfigResolverInterface $configResolver;
     private PagerfantaInterface $pagerfanta;
 
     private Closure $routeGenerator;
@@ -26,7 +28,11 @@ class SiteView implements ViewInterface
 
     private int $endPage;
 
-    public function __construct(private Environment $twig, private ConfigResolverInterface $configResolver) {}
+    public function __construct(Environment $twig, ConfigResolverInterface $configResolver)
+    {
+        $this->twig = $twig;
+        $this->configResolver = $configResolver;
+    }
 
     /**
      * Returns the canonical name.

@@ -28,8 +28,10 @@ use const PHP_EOL;
 
 final class UpdatePublishDateCommand extends Command
 {
-    public function __construct(private Repository $repository)
+    private Repository $repository;
+    public function __construct(Repository $repository)
     {
+        $this->repository = $repository;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }
@@ -74,7 +76,7 @@ final class UpdatePublishDateCommand extends Command
 
         try {
             $contentType = $this->repository->getContentTypeService()->loadContentTypeByIdentifier($contentTypeIdentifier);
-        } catch (NotFoundException) {
+        } catch (NotFoundException $exception) {
             throw new RuntimeException("Content type '" . $contentTypeIdentifier . "' does not exist");
         }
 
@@ -133,16 +135,21 @@ final class UpdatePublishDateCommand extends Command
                         null,
                 );
 
-                $dateValueData = match (true) {
-                    $dateFieldValue instanceof DateAndTimeValue => $dateFieldValue->value,
-                    $dateFieldValue instanceof DateValue => $dateFieldValue->date,
-                    default => throw new RuntimeException(
-                        sprintf(
-                            'Field "%s" is of wrong type, ezdatetime or ezdate expected.',
-                            $fieldDefIdentifier,
-                        ),
-                    ),
-                };
+                switch (true) {
+                    case $dateFieldValue instanceof DateAndTimeValue:
+                        $dateValueData = $dateFieldValue->value;
+                        break;
+                    case $dateFieldValue instanceof DateValue:
+                        $dateValueData = $dateFieldValue->date;
+                        break;
+                    default:
+                        throw new RuntimeException(
+                            sprintf(
+                                'Field "%s" is of wrong type, ezdatetime or ezdate expected.',
+                                $fieldDefIdentifier,
+                            ),
+                        );
+                }
 
                 if (
                     $dateValueData instanceof DateTimeInterface

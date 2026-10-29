@@ -45,6 +45,9 @@ use const DIRECTORY_SEPARATOR;
 
 abstract class BaseMultiprocessCommand extends Command
 {
+    protected string $projectDir;
+    protected ?LoggerInterface $logger = null;
+    protected ?string $phpPath = null;
     protected InputInterface $input;
 
     protected SymfonyStyle $symfonyStyle;
@@ -52,16 +55,19 @@ abstract class BaseMultiprocessCommand extends Command
     protected ProgressBar $progressBar;
 
     public function __construct(
-        /**
-         * @readonly
-         */
-        protected string $projectDir,
-        /**
-         * @readonly
-         */
-        protected ?LoggerInterface $logger = null,
-        protected ?string $phpPath = null,
+        string $projectDir,
+        ?LoggerInterface $logger = null,
+        ?string $phpPath = null
     ) {
+        /**
+         * @readonly
+         */
+        $this->projectDir = $projectDir;
+        /**
+         * @readonly
+         */
+        $this->logger = $logger;
+        $this->phpPath = $phpPath;
         $this->logger = $logger ?? new NullLogger();
         parent::__construct();
     }

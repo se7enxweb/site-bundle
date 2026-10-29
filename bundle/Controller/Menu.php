@@ -12,20 +12,24 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class Menu extends Controller
 {
-    public function __construct(
+    private MenuProviderInterface $menuProvider;
+    private RendererProviderInterface $menuRenderer;
+    private TagHandler $tagHandler;
+    public function __construct(MenuProviderInterface $menuProvider, RendererProviderInterface $menuRenderer, TagHandler $tagHandler)
+    {
         /**
          * @readonly
          */
-        private MenuProviderInterface $menuProvider,
+        $this->menuProvider = $menuProvider;
         /**
          * @readonly
          */
-        private RendererProviderInterface $menuRenderer,
+        $this->menuRenderer = $menuRenderer;
         /**
          * @readonly
          */
-        private TagHandler $tagHandler,
-    ) {}
+        $this->tagHandler = $tagHandler;
+    }
 
     /**
      * Renders the menu with provided name.

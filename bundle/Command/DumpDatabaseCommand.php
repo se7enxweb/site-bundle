@@ -22,8 +22,10 @@ use const DIRECTORY_SEPARATOR;
 
 final class DumpDatabaseCommand extends Command
 {
-    public function __construct(private Connection $connection)
+    private Connection $connection;
+    public function __construct(Connection $connection)
     {
+        $this->connection = $connection;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }

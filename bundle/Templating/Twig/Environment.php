@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Netgen\Bundle\SiteBundle\Templating\Twig;
 
-use Composer\InstalledVersions;
+use ReflectionMethod;
 use Twig\Environment as BaseEnvironment;
 use Twig\Source;
+use Twig\Template;
 
 use function sprintf;
 use function str_replace;
-use function version_compare;
 
 final class Environment extends BaseEnvironment
 {
@@ -23,7 +23,9 @@ final class Environment extends BaseEnvironment
         }
 
         $className = DebugTemplate::class;
-        if (version_compare(InstalledVersions::getVersion('twig/twig') ?? '', '3.12.0', '<')) {
+        // Twig before 3.12 declares getTemplateName() without a return type. Ask Twig itself instead of the
+        // installed version: se7enxweb/twig replaces twig/twig, whose version may then be unknown or a branch name.
+        if (!(new ReflectionMethod(Template::class, 'getTemplateName'))->hasReturnType()) {
             $className = LegacyDebugTemplate::class;
         }
 

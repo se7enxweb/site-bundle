@@ -12,8 +12,10 @@ use Symfony\Component\HttpKernel\Profiler\Profiler;
 
 final class ProfilerCachePurgerCommand extends Command
 {
-    public function __construct(private ?Profiler $profiler = null)
+    private ?Profiler $profiler = null;
+    public function __construct(?Profiler $profiler = null)
     {
+        $this->profiler = $profiler;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }

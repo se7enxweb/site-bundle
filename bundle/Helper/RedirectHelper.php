@@ -19,7 +19,13 @@ use function trim;
 
 final class RedirectHelper
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private Site $site) {}
+    private UrlGeneratorInterface $urlGenerator;
+    private Site $site;
+    public function __construct(UrlGeneratorInterface $urlGenerator, Site $site)
+    {
+        $this->urlGenerator = $urlGenerator;
+        $this->site = $site;
+    }
 
     /**
      * Checks if content on give location has internal or external
@@ -47,7 +53,7 @@ final class RedirectHelper
             }
         } elseif ($externalRedirectValue instanceof UrlValue && !$content->getField('external_redirect')->isEmpty()) {
             $externalRedirectLink = $externalRedirectValue->link ?? '';
-            if (str_starts_with($externalRedirectLink, 'http')) {
+            if (strncmp($externalRedirectLink, 'http', strlen('http')) === 0) {
                 return new RedirectResponse($externalRedirectLink, Response::HTTP_MOVED_PERMANENTLY);
             }
 

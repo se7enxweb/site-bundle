@@ -22,19 +22,31 @@ use function str_replace;
 
 final class Download extends Controller
 {
+    private Site $site;
+    private IOServiceInterface $ioFileService;
+    private IOServiceInterface $ioImageService;
+    private TranslatorInterface $translator;
+    private EventDispatcherInterface $dispatcher;
+    private ConfigResolverInterface $configResolver;
     /**
      * @var string[]
      */
     private array $inlineMimeTypes;
 
     public function __construct(
-        private Site $site,
-        private IOServiceInterface $ioFileService,
-        private IOServiceInterface $ioImageService,
-        private TranslatorInterface $translator,
-        private EventDispatcherInterface $dispatcher,
-        private ConfigResolverInterface $configResolver,
+        Site $site,
+        IOServiceInterface $ioFileService,
+        IOServiceInterface $ioImageService,
+        TranslatorInterface $translator,
+        EventDispatcherInterface $dispatcher,
+        ConfigResolverInterface $configResolver
     ) {
+        $this->site = $site;
+        $this->ioFileService = $ioFileService;
+        $this->ioImageService = $ioImageService;
+        $this->translator = $translator;
+        $this->dispatcher = $dispatcher;
+        $this->configResolver = $configResolver;
         $this->inlineMimeTypes = $this->configResolver->getParameter('download.show_inline', 'ngsite');
     }
 
@@ -49,8 +61,11 @@ final class Download extends Controller
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException If file or image does not exist
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException If content has all of its locations hidden
+     * @param int|string $contentId
+     * @param int|string $fieldId
+     * @param bool|string|null $isInline
      */
-    public function __invoke(Request $request, int|string $contentId, int|string $fieldId, bool|string|null $isInline = null): BinaryStreamResponse
+    public function __invoke(Request $request, $contentId, $fieldId, $isInline = null): BinaryStreamResponse
     {
         $contentId = (int) $contentId;
         $fieldId = (int) $fieldId;

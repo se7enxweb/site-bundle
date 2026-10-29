@@ -26,6 +26,13 @@ use function reset;
 
 final class NewsletterService
 {
+    private MailerInterface $mailer;
+    private MailerLite $mailerLite;
+    private string $mailerLiteApiKey;
+    private TranslatorInterface $translator;
+    private string $newsletterSenderEmail;
+    private string $newsletterRecipientEmail;
+    private ?LoggerInterface $logger = null;
     public const ALREADY_ACTIVE = 'already_active';
 
     public const NEW_UNCONFIRMED = 'new';
@@ -34,8 +41,15 @@ final class NewsletterService
 
     public const UNSUBSCRIBED = 'unsubscribed';
 
-    public function __construct(private MailerInterface $mailer, private MailerLite $mailerLite, private string $mailerLiteApiKey, private TranslatorInterface $translator, private string $newsletterSenderEmail, private string $newsletterRecipientEmail, private ?LoggerInterface $logger = null)
+    public function __construct(MailerInterface $mailer, MailerLite $mailerLite, string $mailerLiteApiKey, TranslatorInterface $translator, string $newsletterSenderEmail, string $newsletterRecipientEmail, ?LoggerInterface $logger = null)
     {
+        $this->mailer = $mailer;
+        $this->mailerLite = $mailerLite;
+        $this->mailerLiteApiKey = $mailerLiteApiKey;
+        $this->translator = $translator;
+        $this->newsletterSenderEmail = $newsletterSenderEmail;
+        $this->newsletterRecipientEmail = $newsletterRecipientEmail;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -138,11 +152,11 @@ final class NewsletterService
     private function extractSubscriberData(array $fields): array
     {
         return [
-            'email' => $fields['sender_email']?->value->email,
+            'email' => ($nullsafeVariable1 = $fields['sender_email']) ? $nullsafeVariable1->value->email : null,
             'fields' => [
-                'name' => $fields['sender_first_name']?->value->text ?? '',
-                'last_name' => $fields['sender_last_name']?->value->text ?? '',
-                'company' => $fields['sender_company']?->value->text ?? '',
+                'name' => (($nullsafeVariable2 = $fields['sender_first_name']) ? $nullsafeVariable2->value->text : null) ?? '',
+                'last_name' => (($nullsafeVariable3 = $fields['sender_last_name']) ? $nullsafeVariable3->value->text : null) ?? '',
+                'company' => (($nullsafeVariable4 = $fields['sender_company']) ? $nullsafeVariable4->value->text : null) ?? '',
             ],
         ];
     }
@@ -196,8 +210,9 @@ final class NewsletterService
 
     /**
      * @param array<string, mixed> $subscriberData
+     * @return mixed
      */
-    private function addSubscriberToGroup(int $groupId, array $subscriberData): mixed
+    private function addSubscriberToGroup(int $groupId, array $subscriberData)
     {
         return $this->mailerLite->groups()->addSubscriber($groupId, $subscriberData);
     }

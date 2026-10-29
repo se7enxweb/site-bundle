@@ -21,8 +21,12 @@ use function trim;
 
 final class Image extends Controller
 {
-    public function __construct(private Site $site, private ?LoggerInterface $logger = null)
+    private Site $site;
+    private ?LoggerInterface $logger = null;
+    public function __construct(Site $site, ?LoggerInterface $logger = null)
     {
+        $this->site = $site;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -38,31 +42,31 @@ final class Image extends Controller
             $location = null;
             $content = null;
 
-            if (str_starts_with($targetLink, 'ezlocation://')) {
+            if (strncmp($targetLink, 'ezlocation://', strlen('ezlocation://')) === 0) {
                 $locationId = (int) mb_substr($targetLink, 9);
 
                 try {
                     $location = $this->site->getLoadService()->loadLocation($locationId);
                     $content = $location->content;
-                } catch (NotFoundException) {
+                } catch (NotFoundException $exception) {
                     $targetLink = null;
 
                     $this->logger->error(sprintf('Tried to generate link to non existing location #%s', $locationId));
-                } catch (UnauthorizedException) {
+                } catch (UnauthorizedException $exception) {
                     $targetLink = null;
 
                     $this->logger->error(sprintf('Tried to generate link to location #%s without read rights', $locationId));
                 }
-            } elseif (str_starts_with($targetLink, 'ezcontent://')) {
+            } elseif (strncmp($targetLink, 'ezcontent://', strlen('ezcontent://')) === 0) {
                 $linkedContentId = (int) mb_substr($targetLink, 11);
 
                 try {
                     $content = $this->site->getLoadService()->loadContent($linkedContentId);
-                } catch (NotFoundException) {
+                } catch (NotFoundException $exception) {
                     $targetLink = null;
 
                     $this->logger->error(sprintf('Tried to generate link to non existing content #%s', $linkedContentId));
-                } catch (UnauthorizedException) {
+                } catch (UnauthorizedException $exception) {
                     $targetLink = null;
 
                     $this->logger->error(sprintf('Tried to generate link to content #%s without read rights', $linkedContentId));
@@ -93,9 +97,9 @@ final class Image extends Controller
 
             if ($directDownloadLink !== null) {
                 $targetLink = $directDownloadLink;
-            } elseif (str_starts_with($targetLink ?? '', 'ezlocation://')) {
+            } elseif (strncmp($targetLink ?? '', 'ezlocation://', strlen('ezlocation://')) === 0) {
                 $targetLink = $this->generateUrl('', [RouteObjectInterface::ROUTE_OBJECT => $location]);
-            } elseif (str_starts_with($targetLink ?? '', 'ezcontent://')) {
+            } elseif (strncmp($targetLink ?? '', 'ezcontent://', strlen('ezcontent://')) === 0) {
                 $targetLink = $this->generateUrl('', [RouteObjectInterface::ROUTE_OBJECT => $content]);
             }
         }

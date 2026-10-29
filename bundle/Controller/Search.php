@@ -13,10 +13,14 @@ use function trim;
 
 final class Search extends Controller
 {
-    public function __construct(/**
-     * @readonly
-     */
-    private SuggestionResolver $suggestionResolver) {}
+    private SuggestionResolver $suggestionResolver;
+    public function __construct(SuggestionResolver $suggestionResolver)
+    {
+        /**
+         * @readonly
+         */
+        $this->suggestionResolver = $suggestionResolver;
+    }
 
     /**
      * Action for displaying the results of full text search.
@@ -52,7 +56,7 @@ final class Search extends Controller
                 $query,
                 $searchAdapter->getSuggestion(),
             );
-        } catch (NotFoundException) {
+        } catch (NotFoundException $exception) {
             $searchSuggestion = null;
         }
 

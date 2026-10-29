@@ -29,33 +29,45 @@ use function array_merge;
  */
 final class ProxyFormHandler extends Controller
 {
+    private RequestStack $requestStack;
+    private CaptchaService $captchaService;
+    private Handler $handler;
+    private EventDispatcherInterface $eventDispatcher;
+    private RefererResolver $refererResolver;
+    private ?LoggerInterface $logger = null;
     public function __construct(
-        /**
-         * @readonly
-         */
-        private RequestStack $requestStack,
-        /**
-         * @readonly
-         */
-        private CaptchaService $captchaService,
-        /**
-         * @readonly
-         */
-        private Handler $handler,
-        /**
-         * @readonly
-         */
-        private EventDispatcherInterface $eventDispatcher,
-        /**
-         * @readonly
-         */
-        private RefererResolver $refererResolver,
-        /**
-         * @readonly
-         */
-        private ?LoggerInterface $logger = null
+        RequestStack $requestStack,
+        CaptchaService $captchaService,
+        Handler $handler,
+        EventDispatcherInterface $eventDispatcher,
+        RefererResolver $refererResolver,
+        ?LoggerInterface $logger = null
     )
     {
+        /**
+         * @readonly
+         */
+        $this->requestStack = $requestStack;
+        /**
+         * @readonly
+         */
+        $this->captchaService = $captchaService;
+        /**
+         * @readonly
+         */
+        $this->handler = $handler;
+        /**
+         * @readonly
+         */
+        $this->eventDispatcher = $eventDispatcher;
+        /**
+         * @readonly
+         */
+        $this->refererResolver = $refererResolver;
+        /**
+         * @readonly
+         */
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 

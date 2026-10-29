@@ -17,14 +17,21 @@ use function md5;
 
 final class LocationFactory implements FactoryInterface
 {
+    private EventDispatcherInterface $eventDispatcher;
+    private ExtensionInterface $fallbackExtension;
+    /**
+     * @var \Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\ExtensionInterface[]
+     */
+    private iterable $extensions = [];
     /**
      * @param \Netgen\Bundle\SiteBundle\Menu\Factory\LocationFactory\ExtensionInterface[] $extensions
      */
-    public function __construct(
-        private EventDispatcherInterface $eventDispatcher,
-        private ExtensionInterface $fallbackExtension,
-        private iterable $extensions = [],
-    ) {}
+    public function __construct(EventDispatcherInterface $eventDispatcher, ExtensionInterface $fallbackExtension, iterable $extensions = [])
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->fallbackExtension = $fallbackExtension;
+        $this->extensions = $extensions;
+    }
 
     public function createItem(string $name, array $options = []): ItemInterface
     {

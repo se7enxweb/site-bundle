@@ -6,7 +6,10 @@ namespace Netgen\Bundle\SiteBundle\Entity;
 
 class UserAccountKey
 {
-    private int|string $id;
+    /**
+     * @var int|string
+     */
+    private $id;
 
     private string $hashKey;
 
@@ -16,8 +19,9 @@ class UserAccountKey
 
     /**
      * Get ID.
+     * @return int|string
      */
-    public function getId(): int|string
+    public function getId()
     {
         return $this->id;
     }

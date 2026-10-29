@@ -24,13 +24,19 @@ use function count;
 
 final class Register extends Controller
 {
-    public function __construct(
-        private UserService $userService,
-        private ContentTypeService $contentTypeService,
-        private EventDispatcherInterface $eventDispatcher,
-        private Repository $repository,
-        private ConfigResolverInterface $configResolver,
-    ) {}
+    private UserService $userService;
+    private ContentTypeService $contentTypeService;
+    private EventDispatcherInterface $eventDispatcher;
+    private Repository $repository;
+    private ConfigResolverInterface $configResolver;
+    public function __construct(UserService $userService, ContentTypeService $contentTypeService, EventDispatcherInterface $eventDispatcher, Repository $repository, ConfigResolverInterface $configResolver)
+    {
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->repository = $repository;
+        $this->configResolver = $configResolver;
+    }
 
     /**
      * Registers user on the site.
@@ -99,7 +105,7 @@ final class Register extends Controller
                     'error' => 'username_taken',
                 ],
             );
-        } catch (NotFoundException) {
+        } catch (NotFoundException $exception) {
             // do nothing
         }
 

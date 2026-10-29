@@ -29,14 +29,22 @@ use function trim;
 
 final class TagContentByTypesCommand extends Command
 {
+    private Repository $repository;
+    private ContentService $contentService;
+    private SearchService $searchService;
+    private TagsService $tagsService;
     private SymfonyStyle $style;
 
     public function __construct(
-        private Repository $repository,
-        private ContentService $contentService,
-        private SearchService $searchService,
-        private TagsService $tagsService,
+        Repository $repository,
+        ContentService $contentService,
+        SearchService $searchService,
+        TagsService $tagsService
     ) {
+        $this->repository = $repository;
+        $this->contentService = $contentService;
+        $this->searchService = $searchService;
+        $this->tagsService = $tagsService;
         // Parent constructor call is mandatory for commands registered as services
         parent::__construct();
     }

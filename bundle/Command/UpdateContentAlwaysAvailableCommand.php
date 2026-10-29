@@ -17,14 +17,18 @@ use function explode;
 
 final class UpdateContentAlwaysAvailableCommand extends Command
 {
+    private Repository $repository;
+    private ContentService $contentService;
     protected static $defaultDescription = 'Update always-available state for the given Content item(s)';
 
     private SymfonyStyle $style;
 
     public function __construct(
-        private Repository $repository,
-        private ContentService $contentService,
+        Repository $repository,
+        ContentService $contentService
     ) {
+        $this->repository = $repository;
+        $this->contentService = $contentService;
         parent::__construct();
     }
 

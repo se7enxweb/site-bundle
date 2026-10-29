@@ -24,8 +24,16 @@ use function str_starts_with;
 
 final class ShortcutExtension implements ExtensionInterface
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private RequestStack $requestStack, private LoadService $loadService, private ?LoggerInterface $logger = null)
+    private UrlGeneratorInterface $urlGenerator;
+    private RequestStack $requestStack;
+    private LoadService $loadService;
+    private ?LoggerInterface $logger = null;
+    public function __construct(UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, LoadService $loadService, ?LoggerInterface $logger = null)
     {
+        $this->urlGenerator = $urlGenerator;
+        $this->requestStack = $requestStack;
+        $this->loadService = $loadService;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -78,7 +86,7 @@ final class ShortcutExtension implements ExtensionInterface
     private function buildItemFromUrl(ItemInterface $item, EnhancedLinkValue $link, Content $content): void
     {
         $uri = $link->reference ?? '';
-        if (!str_starts_with($uri, 'http')) {
+        if (strncmp($uri, 'http', strlen('http')) !== 0) {
             $request = $this->requestStack->getMainRequest();
             if (!$request instanceof Request) {
                 return;

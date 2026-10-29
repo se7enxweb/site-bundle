@@ -23,8 +23,18 @@ use function str_starts_with;
 
 final class MenuItemExtension implements ExtensionInterface
 {
-    public function __construct(private UrlGeneratorInterface $urlGenerator, private RequestStack $requestStack, private ConfigResolverInterface $configResolver, private ChildrenBuilder $childrenBuilder, private ?LoggerInterface $logger = null)
+    private UrlGeneratorInterface $urlGenerator;
+    private RequestStack $requestStack;
+    private ConfigResolverInterface $configResolver;
+    private ChildrenBuilder $childrenBuilder;
+    private ?LoggerInterface $logger = null;
+    public function __construct(UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, ConfigResolverInterface $configResolver, ChildrenBuilder $childrenBuilder, ?LoggerInterface $logger = null)
     {
+        $this->urlGenerator = $urlGenerator;
+        $this->requestStack = $requestStack;
+        $this->configResolver = $configResolver;
+        $this->childrenBuilder = $childrenBuilder;
+        $this->logger = $logger;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -77,7 +87,7 @@ final class MenuItemExtension implements ExtensionInterface
     {
         $uri = $urlValue->link ?? '';
 
-        if (!str_starts_with($uri, 'http')) {
+        if (strncmp($uri, 'http', strlen('http')) !== 0) {
             $request = $this->requestStack->getMainRequest();
             if (!$request instanceof Request) {
                 return;

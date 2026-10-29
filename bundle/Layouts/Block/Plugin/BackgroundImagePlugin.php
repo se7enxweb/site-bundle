@@ -19,7 +19,11 @@ use Netgen\Layouts\Standard\Block\BlockDefinition\Handler\ListHandler;
 
 final class BackgroundImagePlugin extends Plugin
 {
-    public function __construct(private LoadService $loadService) {}
+    private LoadService $loadService;
+    public function __construct(LoadService $loadService)
+    {
+        $this->loadService = $loadService;
+    }
 
     public static function getExtendedHandlers(): iterable
     {
@@ -67,7 +71,7 @@ final class BackgroundImagePlugin extends Plugin
             $params['background_image:image_content'] = $this->loadService->loadContent(
                 $block->getParameter('background_image:image')->getValue(),
             );
-        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException) {
+        } catch (NotFoundException|TranslationNotMatchedException|UnauthorizedException $exception) {
             // Do nothing
         }
     }

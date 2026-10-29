@@ -21,12 +21,18 @@ abstract class UserEvent extends Event
         return $this->parameters;
     }
 
-    public function getParameter(string $name): mixed
+    /**
+     * @return mixed
+     */
+    public function getParameter(string $name)
     {
         return $this->parameters[$name] ?? null;
     }
 
-    public function setParameter(string $name, mixed $value): void
+    /**
+     * @param mixed $value
+     */
+    public function setParameter(string $name, $value): void
     {
         $this->parameters[$name] = $value;
     }

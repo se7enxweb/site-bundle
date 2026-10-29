@@ -11,15 +11,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class CheckRedirect extends Controller
 {
-    public function __construct(/**
-     * @readonly
-     */
-    private RedirectHelper $redirectHelper) {}
+    private RedirectHelper $redirectHelper;
+    public function __construct(RedirectHelper $redirectHelper)
+    {
+        /**
+         * @readonly
+         */
+        $this->redirectHelper = $redirectHelper;
+    }
 
     /**
      * Action for viewing content which has redirect fields.
+     * @return \Netgen\Bundle\IbexaSiteApiBundle\View\ContentView|\Symfony\Component\HttpFoundation\Response
      */
-    public function __invoke(ContentView $view): ContentView|Response
+    public function __invoke(ContentView $view)
     {
         $location = $view->getSiteLocation();
         if (!$location instanceof Location) {

@@ -18,12 +18,18 @@ use function sprintf;
 
 final class SiteImage implements HandlerInterface
 {
+    private Provider $namedObjectProvider;
+    private RequestStack $requestStack;
     /**
      * Field identifier that provides opengraph image.
      */
     private const FIELD_IDENTIFIER = 'site_opengraph_image';
 
-    public function __construct(private Provider $namedObjectProvider, private RequestStack $requestStack) {}
+    public function __construct(Provider $namedObjectProvider, RequestStack $requestStack)
+    {
+        $this->namedObjectProvider = $namedObjectProvider;
+        $this->requestStack = $requestStack;
+    }
 
     /**
      * @param mixed[] $params
