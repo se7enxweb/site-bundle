@@ -17,7 +17,7 @@ final class XslRegisterPass implements CompilerPassInterface
     {
         /** @var string[] $siteAccessList */
         $siteAccessList = $container->getParameter('ibexa.site_access.list');
-        $scopes = [ConfigResolver::SCOPE_DEFAULT, ...$siteAccessList];
+        $scopes = array_merge([ConfigResolver::SCOPE_DEFAULT], $siteAccessList);
 
         foreach ($scopes as $scope) {
             if ($container->hasParameter('ibexa.site_access.config' . $scope . 'fieldtypes.ezrichtext.output_custom_xsl')) {

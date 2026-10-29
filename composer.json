@@ -1,5 +1,5 @@
 {
-    "name": "netgen/site-bundle",
+    "name": "se7enxweb/site-bundle",
     "description": "Netgen Site Bundle is an Ibexa bundle that implements common features that are used by Netgen to implement websites",
     "license": "GPL-2.0-only",
     "type": "ibexa-bundle",
@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.0",
         "ibexa/core": "^4.6",
         "ibexa/content-forms": "^4.6",
         "symfony/mailer": "^5.4",
@@ -36,6 +36,9 @@
         "sensio/framework-extra-bundle": "^6.2",
         "sebastianfeldmann/git": "^3.8",
         "mailerlite/mailerlite-api-v2-php-sdk": "^0.3.2"
+    },
+    "replace": {
+        "netgen/site-bundle": "self.version"
     },
     "require-dev": {
         "netgen/layouts-standard": "^1.4",

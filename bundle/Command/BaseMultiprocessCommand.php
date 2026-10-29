@@ -52,10 +52,17 @@ abstract class BaseMultiprocessCommand extends Command
     protected ProgressBar $progressBar;
 
     public function __construct(
-        protected readonly string $projectDir,
-        protected readonly LoggerInterface $logger = new NullLogger(),
+        /**
+         * @readonly
+         */
+        protected string $projectDir,
+        /**
+         * @readonly
+         */
+        protected ?LoggerInterface $logger = null,
         protected ?string $phpPath = null,
     ) {
+        $this->logger = $logger ?? new NullLogger();
         parent::__construct();
     }
 

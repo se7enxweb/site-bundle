@@ -23,8 +23,14 @@ use function trim;
 final class SearchQueryType extends OptionsResolverBasedQueryType
 {
     public function __construct(
-        private readonly Site $site,
-        private readonly ConfigResolverInterface $configResolver,
+        /**
+         * @readonly
+         */
+        private Site $site,
+        /**
+         * @readonly
+         */
+        private ConfigResolverInterface $configResolver,
     ) {}
 
     public static function getName(): string

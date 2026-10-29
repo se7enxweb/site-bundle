@@ -34,7 +34,9 @@ abstract class BaseDebugTemplate extends Template
         // Get parent result to be able to insert template name as HTML comments if applicable.
         // Layout template name will only appear at the end, to avoid potential quirks with old browsers
         // when comments appear before doctype declaration.
-        $templateResult = implode('', [...parent::yield($context, $blocks)]);
+        // PHP 8.0 form of [...parent::yield()]: render once, keep every chunk (a generator repeats its keys)
+        $result = parent::yield($context, $blocks);
+        $templateResult = implode('', is_array($result) ? $result : iterator_to_array($result, false));
 
         $templateName = trim($this->fileSystem->makePathRelative($this->getSourceContext()->getPath(), dirname((string) getcwd())), '/');
         $isHtmlTemplate = str_ends_with($templateName, 'html.twig');

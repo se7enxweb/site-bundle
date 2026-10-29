@@ -24,12 +24,10 @@ use function str_starts_with;
 
 final class ShortcutExtension implements ExtensionInterface
 {
-    public function __construct(
-        private UrlGeneratorInterface $urlGenerator,
-        private RequestStack $requestStack,
-        private LoadService $loadService,
-        private LoggerInterface $logger = new NullLogger(),
-    ) {}
+    public function __construct(private UrlGeneratorInterface $urlGenerator, private RequestStack $requestStack, private LoadService $loadService, private ?LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?? new NullLogger();
+    }
 
     public function matches(Location $location): bool
     {

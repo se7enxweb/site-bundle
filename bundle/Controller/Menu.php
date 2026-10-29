@@ -13,9 +13,18 @@ use Symfony\Component\HttpFoundation\Response;
 final class Menu extends Controller
 {
     public function __construct(
-        private readonly MenuProviderInterface $menuProvider,
-        private readonly RendererProviderInterface $menuRenderer,
-        private readonly TagHandler $tagHandler,
+        /**
+         * @readonly
+         */
+        private MenuProviderInterface $menuProvider,
+        /**
+         * @readonly
+         */
+        private RendererProviderInterface $menuRenderer,
+        /**
+         * @readonly
+         */
+        private TagHandler $tagHandler,
     ) {}
 
     /**

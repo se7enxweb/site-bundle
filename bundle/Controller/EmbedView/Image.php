@@ -21,7 +21,10 @@ use function trim;
 
 final class Image extends Controller
 {
-    public function __construct(private Site $site, private LoggerInterface $logger = new NullLogger()) {}
+    public function __construct(private Site $site, private ?LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?? new NullLogger();
+    }
 
     /**
      * Action for viewing embedded content with image content type identifier.

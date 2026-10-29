@@ -25,7 +25,7 @@ final class MultimediaRelationResolver implements LocationRelationResolverInterf
         // Get children objects and add them in multimedia item list
         if ($options['include_children']) {
             $children = $location->filterChildren($options['content_types']);
-            $multimediaItems[] = [...$children->getCurrentPageResults()];
+            $multimediaItems[] = is_array($pageResults = $children->getCurrentPageResults()) ? array_values($pageResults) : iterator_to_array($pageResults, false);
         }
 
         $relatedMultimedia = $this->innerResolver->loadRelations($location, $fieldIdentifier);
@@ -33,7 +33,7 @@ final class MultimediaRelationResolver implements LocationRelationResolverInterf
             if ($relatedMultimediaItem->contentInfo->contentTypeIdentifier === 'ng_gallery') {
                 // For galleries, find children objects and add them in multimedia item list
                 $children = $relatedMultimediaItem->filterChildren($options['content_types']);
-                $multimediaItems[] = [...$children->getCurrentPageResults()];
+                $multimediaItems[] = is_array($pageResults = $children->getCurrentPageResults()) ? array_values($pageResults) : iterator_to_array($pageResults, false);
             } else {
                 $multimediaItems[] = [$relatedMultimediaItem];
             }
